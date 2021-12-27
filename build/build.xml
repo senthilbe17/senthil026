@@ -1,0 +1,41 @@
+<project name="JSPCrud" default="compile" basedir=".">
+    <description>
+		development compilation - compiles the java source and jasper
+    </description>
+  <!-- set global properties for this build -->
+  <property name="src" location="../src"/>
+  <property name="lib.dir" value="../WEB-INF/lib" />	
+  <property name="classes.dir" value="../WEB-INF/classes" />
+  <property name="pmd.shtml" value="../src/pmd/pmd_summaryreport.html" />
+ 
+  <path id="edu.path">
+    <pathelement location="${classes.dir}" />
+    <fileset dir="${lib.dir}">
+	<include name="**/*.jar"/>
+    </fileset>
+  </path>
+  <target name="init">
+    <!-- Create the time stamp -->
+    <tstamp/>
+    <!-- Create the build directory structure used by compile -->
+    <mkdir dir="${classes.dir}"/>
+  </target>
+  <target name="pmd">
+		  <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="edu.path"/>
+		  <pmd shortFilenames="true">
+			  <ruleset>rulesets/basic.xml</ruleset>
+			  <ruleset>basic</ruleset>
+			  <formatter type="summaryhtml" toFile="${pmd.shtml}" toConsole="true"/>
+			  <fileset dir="${src}">
+				  <include name="**/*.java"/>
+			  </fileset>
+		  </pmd>
+  </target>
+  <target name="compile" depends="init" description="compile the source " >
+    <!-- Compile the java code from ${src} into ${classes.dir} -->
+  <javac fork="true" srcdir="${src}" destdir="${classes.dir}" memoryinitialsize="256m" memorymaximumsize="2048m" includeantruntime="false" source="1.8" target="1.8"  >
+		<classpath refid="edu.path" /> 
+    </javac>
+	<echo>.java[source] compiled successfully.</echo>
+  </target>
+</project>
